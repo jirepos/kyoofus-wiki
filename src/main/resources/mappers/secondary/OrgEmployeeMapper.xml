@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jirepo.hrm.org.mapper.OrgEmployeeMapper">
+
+  <!-- 하위부서 조회-->
+  <select id="getSubDepartments" parameterType="string" resultType="com.jirepo.hrm.org.vo.OrgDepartment">
+        SELECT DEPT_ID, DEPT_LOC, DEPT_NAME, dept_sort_ordr 
+        FROM org_department
+        WHERE UP_DEPT_ID = #{value}
+        AND dept_status = 'U'
+        ORDER BY dept_sort_ordr 
+  </select>
+  
+</mapper>

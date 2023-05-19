@@ -1,0 +1,77 @@
+
+# 조직도 graphqls 
+
+# 부서 정보 
+type Department { 
+    deptId:  String 
+    deptName: String 
+    deptLoc:String 
+    deptSortOrdr:Int 
+}
+
+# 직원정보
+type OrgEmployeeInfo { 
+  # person 
+  psnId: String
+  cellPhone: String
+  profileImg: String 
+  birthDate: String
+}
+
+# 직원정보 
+extend type OrgEmployeeInfo  { 
+
+  # employee 
+  cmpId: String 
+  empId: String
+  userName: String 
+  psnId: String
+  psnEmail: String
+  cmpEmail: String 
+  userId: String
+  ecnyDate: String 
+  secLvl: Int
+  updDt: Date
+
+
+  # related to MY_JOB 
+  deptId: String 
+  deptName: String
+  posId: String 
+  posName: String 
+  ofcId: String 
+  ofcName: String 
+}
+
+
+
+
+# 임직원 
+type Employee {
+  cmpId: String 
+  empId: String
+  userName: String 
+  psnId: String
+  psnEmail: String
+  cmpEmail: String 
+  userId: String
+  secLvl: Int
+  updDt: Date 
+  profileImg: String 
+}
+
+
+
+# type Query, Mutation
+# 기본적으로 루트 Query와 루트 Mutation을 의미한다. 이것들은 단 하나씩만 존재해야 한다.
+# 이것의 이름은 schema를 이용해 변경할 수도 있다.
+# root 쿼리는 하나만 
+extend type Query { 
+  # 부서 직원 목록 
+  employeesOfDept(deptId: String): [Employee]
+  # 하위 부서 목록 
+  subDepartments(upDeptId:String):[Department]
+  # 직원 정보 
+  employeeInfo(empId: String): OrgEmployeeInfo
+}
+

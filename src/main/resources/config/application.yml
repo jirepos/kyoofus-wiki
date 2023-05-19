@@ -1,0 +1,157 @@
+# GraphQL
+graphql:
+  extended-scalars: Date
+  servlet:
+    # Sets if GraphQL servlet should be created and exposed. If not specified defaults to "true".
+    enabled: true
+    # Sets the path where GraphQL servlet will be exposed. If not specified defaults to "/graphql"
+    mapping: /graphql
+    cors-enabled: true
+    cors:
+      allowed-origins: http://some.domain.com
+      allowed-methods: GET, HEAD, POST
+    # if you want to @ExceptionHandler annotation for custom GraphQLErrors
+    exception-handlers-enabled: true
+    context-setting: PER_REQUEST_WITH_INSTRUMENTATION
+    # Sets if asynchronous operations are supported for GraphQL requests. If not specified defaults to true.
+    async-mode-enabled: true
+
+
+# Embeded Tomcat Configuration 
+server:
+  port: 80
+  tomcat:
+    threads:
+      max: 200    
+  servlet:
+    register-default-servlet: true
+
+
+# Application Server 
+application-server:
+  # jwt 생성에 사용할 키 
+  jwt-key=KSnr95mP4umfvVEAQ4odO8/d/Prf070yC5VG2aIgzdw=
+
+
+# 서버 타임존
+server-time-zone: "Asia/Seoul" 
+# 표준 데이트 포맷
+standard-date-format: "yyyy-MM-dd HH:mm:ss"
+
+# 다국어 
+# Message Source 다국어 파일 
+# You must write array in application.yml like below:
+# Use comma. Do not use dash(-)
+i18n-message-files: translation/message,translation/common
+
+# i18n-message-files:
+#   - translation/common
+#   - translation/message
+
+
+# ---------------------------------------------------------
+# SpringBoot configuration
+# ---------------------------------------------------------
+spring:
+  # batch:
+  #   # spring.batch.jdbc.initialize-schema
+  #   # spring.batch.job.enabled
+  #   job:
+  #     enabled: false
+  #   jdbc:
+  #     initialize-schema: always  # or never 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  main:
+    #spring.main.allow-bean-definition-overriding=true
+    allow-bean-definition-overriding: true
+  #spring.freemarker.template-loader-path=classpath:/templates
+  freemarker:
+    suffix: .ftl
+    template-loader-path: classpath:/templates
+  web:
+    resources:
+      static-locations:
+        - classpath:/static
+        - classpath:/public
+
+
+
+# Logging
+logging:
+  file:
+    # path는 디렉터리 이름 
+    path: logs/app
+    pattern:
+      console: "%d %-5level %logger : %msg%n"
+      #file:  "%d %-5level [%thread] %logger : %msg%n"
+      rolling-file-name: jirepo-app-%d{yyyy-MM-dd-HH-mm}.%i.log
+    max-size: 100MB
+    max-history: 10
+  level:
+    root: INFO
+    org.springframework: ERROR
+    # debug 모드일 때 Prepared SQL 로그도 출력된다. 출력되지 않게 하려면 INFO로 설정한다.
+    # 
+    com.jirepo: DEBUG
+    com.coxautodev.graphql: DEBUG
+    
+
+
+# For SQL Logging
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+      logging: slf4j
+      tracing:
+        include-parameter-values: true
+      multiline: false 
+      #appender: com.p6spy.engine.spy.appender.StdoutLogger
+  show-prepared-sql: false
+  package-name: com.jirepo 
+
+
+
+
+# Spring profiles 
+---
+spring:
+  profiles:
+    group:
+      # 로컬 환경 
+      local: common, development
+      # 서버환경 
+      #prod: common, production 
+
+
+
+# Common Spring Profile
+---
+spring:
+  config:
+    activate:
+      on-profile: common
+    import:
+      - classpath:/config/common-config.yml 
+
+
+# Spring profile for local development
+---
+spring:
+  config:
+    activate:
+      on-profile: development
+    import:
+      - classpath:/config/development/dev-db.yml
+
+# Base direcory to upload file 
+upload-dir: e:/upload/
+
+
+
+

@@ -1,0 +1,59 @@
+# schema {
+#     query: Query
+#     #mutation: Mutation
+# }
+
+# 근태 graphqls 
+
+
+# 출근 카드 
+type AttendCard { 
+  cmpId: String 
+  empId: String 
+  attnCardDate: String 
+  attnDate: String  
+  attnYy: String 
+  attnTime: String  
+  lvofTime: String  
+}
+
+
+
+# 부재정보 
+type AtnAbsence { 
+  empId: String 
+  absnYy: String 
+  absnMm: String 
+  absnWhy: String 
+  absnBgnDe: String
+  absnEndDe: String
+  allDayYn: String
+}
+
+# 부재정보 조회 파라미터 
+input AtnAbsenceInput { 
+  empId: String 
+  absnYy: String 
+  absnMm: String 
+}
+
+# 연차 상태 
+type AtnYearHoliday {
+    empId: String 
+    acctBgnDate: String
+    totYhldCnt:Int 
+    useYhldCnt: Int
+    remdYhldCnt: Int
+}///~
+
+
+
+# 쿼리 
+extend type Query { 
+  # 출근 카드 
+  attendCardsOfWeek(empId: String, date:String): [AttendCard] 
+  # 부재정보
+  absences(input: AtnAbsenceInput): [AtnAbsence]
+  # 연차 상태
+  annLeaveStat(empId: String, year:String): [AtnYearHoliday]
+}

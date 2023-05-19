@@ -1,0 +1,25 @@
+
+# 직원 메모 graphqls 
+
+
+# 직원 메모
+type OrgEmpMemo {
+  empId: String
+  memoId: String 
+  memo: String 
+  regDt: String 
+  updDt: Date 
+}
+
+
+extend type Query {
+  # 직원 메모 조회
+  memosOfEmp(empId: String): [OrgEmpMemo]
+}
+
+extend type Mutation { 
+  # 직원 메모 추가
+  insertMemo(empId: String, memo: String): OrgEmpMemo
+  # 직원 메모 삭제 
+  deleteMemo(memoId: String): String 
+}

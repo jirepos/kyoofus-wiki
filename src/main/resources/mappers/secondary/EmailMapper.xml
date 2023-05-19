@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jirepo.hrm.email.mapper.EmailMapper">
+  
+  <select id="selectMyEmailsByFrom" parameterType="com.jirepo.hrm.email.vo.EmailSearchInput" resultType="com.jirepo.hrm.email.vo.EmailVo">
+        SELECT A.*
+        FROM (
+                SELECT Z.*  
+                FROM ( 
+                        SELECT Y.*, ROWNUM AS RNUM   
+                        FROM ( 
+                                SELECT X.*, B.MAIL_ID , B.MSG_ID, C.SUBJECT, B.MAIL_RECV_DT ,C.MAIL_SEND_DT
+                                FROM (
+                                        SELECT A.MAILBOX_ID, A.PHYSICAL_NAME  
+                                        FROM EML_MAILBOX A
+                                        WHERE EMAIL  = #{loginUserEmail}   /*'sanghyun@naonsoft.com' */
+                                    ) X
+                                INNER JOIN EML_MAIL B ON B.MAILBOX_ID = X.MAILBOX_ID      
+                                INNER JOIN EML_MAIL_MESSAGE C  ON C.MSG_ID = B.MSG_ID 
+                                <if test="inOutType eq 'out' ">
+                                    INNER JOIN EML_MAIL_TO D ON D.MSG_ID = B.MSG_ID
+                                </if>
+                                <if test="inOutType eq 'in' ">
+                                    WHERE X.PHYSICAL_NAME NOT IN ('Sent', 'Spam', 'Drafts', '보낸 편지함', '지운 편지함' )     
+                                </if>
+                                <if test="inOutType eq 'out' ">
+                                    WHERE X.PHYSICAL_NAME NOT IN ( 'Spam', 'Drafts', 'INBOX', '지운 편지함' )     
+                                </if>
+                                AND B.MAIL_DEL_YN = 'N' 
+                                <choose>
+                                    <when test="beforeDt == true">
+                                        <if test="inOutType eq 'in' ">
+                                            AND B.MAIL_RECV_DT <![CDATA[ < ]]> TO_DATE(  #{recvSendDt}  /* '2022-06-17 00:00:00' */, 'YYYY-MM-DD HH24:MI:SS') 
+                                        </if>
+                                        <if test="inOutType eq 'out' ">
+                                            AND C.MAIL_SEND_DT <![CDATA[ < ]]> TO_DATE(  #{recvSendDt}  /* '2022-06-17 00:00:00' */, 'YYYY-MM-DD HH24:MI:SS') 
+                                        </if>
+                                    </when>
+                                    <otherwise>
+                                        <if test="inOutType eq 'in' ">                                    
+                                            AND B.MAIL_RECV_DT <![CDATA[ > ]]> TO_DATE(  #{recvSendDt}  /* '2022-06-17 00:00:00' */, 'YYYY-MM-DD HH24:MI:SS') 
+                                        </if>
+                                        <if test="inOutType eq 'out' ">
+                                            AND C.MAIL_SEND_DT <![CDATA[ > ]]> TO_DATE(  #{recvSendDt}  /* '2022-06-17 00:00:00' */, 'YYYY-MM-DD HH24:MI:SS') 
+                                        </if>
+                                    </otherwise>
+                                </choose>
+                                 <if test="inOutType eq 'in' ">
+                                    AND C.MAIL_FROM LIKE '%' || #{fromOrTo} || '%' /* '%barnlife@naonsoft.com%' */
+                                 </if>
+                                 <if test="inOutType eq 'out' ">
+                                    AND D.MAIL_TO LIKE '%' || #{fromOrTo} || '%' /* '%barnlife@naonsoft.com%' */
+                                 </if>
+                                
+
+                                <choose>
+                                    <when test="beforeDt == true">
+                                       <if test="inOutType eq 'in' ">
+                                            ORDER BY B.MAIL_RECV_DT DESC 
+                                       </if>
+                                        <if test="inOutType eq 'out' ">
+                                            ORDER BY C.MAIL_SEND_DT ASC 
+                                        </if>
+                                    </when>
+                                    <otherwise>
+                                        <if test="inOutType eq 'in' ">
+                                            ORDER BY B.MAIL_RECV_DT ASC 
+                                        </if>
+                                        <if test="inOutType eq 'out' ">
+                                            ORDER BY C.MAIL_SEND_DT ASC 
+                                        </if>
+                                    </otherwise>
+                                </choose>
+                            ) Y 
+                    ) Z 
+                WHERE RNUM <![CDATA[ < ]]> 11     
+        ) A 
+        ORDER BY A.MAIL_RECV_DT DESC    
+  </select>
+
+</mapper>

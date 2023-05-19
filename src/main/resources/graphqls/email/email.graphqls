@@ -1,0 +1,29 @@
+
+# Email Graphqls 
+
+# 이메일 
+type EmailVo {
+    mailId: String
+    msgId: String 
+    subject: String 
+    mailRecvDt: Date 
+    mailSendDt: Date 
+}
+
+
+
+# 이메일 검색 조건 
+input EmailSearchInput { 
+  inOutType: String 
+  dbType: String 
+  recvSendDt: String 
+  fromOrTo: String 
+  loginUserEmail: String 
+  beforeDt: Boolean 
+}
+
+extend type Query {
+  # 직원 메모 조회
+  myEmailsByFrom(input: EmailSearchInput): [EmailVo]
+}
+

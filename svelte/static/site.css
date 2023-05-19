@@ -1,0 +1,50 @@
+@import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+html, body { 
+	margin:0;
+	padding:0;
+	font-size: 14px;
+	height: 100%;
+	width: 100%;
+	font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+
+/* layout */
+
+.layout-container { 
+	display: flex; 
+	flex-direction: column;
+	height: 100vh;   /* full screen */ 
+	width: 100vw;
+}
+
+
+/* top */
+.layout-top { 
+	background-color:coral;
+	border-bottom: 1px solid #ccc;
+	flex-basis: 50px; 
+	line-height: 50px;  /* 세로 가운데 정렬 */ 
+	/* height: 30px;   height와 line-height 값이 같아야 정렬됨 */
+}
+
+/* content */
+.layout-content {
+	flex-grow: 1;
+	overflow: auto;
+}
+.layout-content::-webkit-scrollbar {
+	display: none; /* Chrome, Safari, Opera*/
+}
+
+
+/* bottom */
+.layout-bottom { 
+	border-top: 1px solid #ccc;
+	flex-basis: 50px; 
+	line-height: 50px;  /* 세로 가운데 정렬 */
+	background-color: #eee;
+	text-align: center;
+}
+
